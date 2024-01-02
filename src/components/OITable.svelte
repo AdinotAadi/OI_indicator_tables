@@ -1,59 +1,38 @@
 <script>
-	import { onMount } from "svelte";
+	export let symbolName;
+	export let ceData;
+	export let peData;
 
-	let ceData = [];
-	let peData = [];
-	let ceTotal = {
-		Strike: "Total",
-		"3 min": 0,
-		"6 min": 0,
-		"9 min": 0,
-		"15 min": 0,
-		"30 min": 0,
-		"60 min": 0,
-		"For Day": 0,
-		"Total OI": 0,
-	};
-	let peTotal = {
-		Strike: "Total",
-		"3 min": 0,
-		"6 min": 0,
-		"9 min": 0,
-		"15 min": 0,
-		"30 min": 0,
-		"60 min": 0,
-		"For Day": 0,
-		"Total OI": 0,
-	};
+	function calculateTotal(data) {
+		let total = {
+			Strike: "Total",
+			"3 min": 0,
+			"6 min": 0,
+			"9 min": 0,
+			"15 min": 0,
+			"30 min": 0,
+			"60 min": 0,
+			"For Day": 0,
+			"Total OI": 0,
+		};
 
-	onMount(async () => {
-		const response = await fetch("src/data/response.json");
-
-		const data = await response.json();
-		ceData = Object.values(data.NIFTY.CE);
-		peData = Object.values(data.NIFTY.PE);
-		Object.keys(ceTotal).forEach((column) => {
+		Object.keys(total).forEach((column) => {
 			if (column !== "Strike") {
-				ceTotal[column] = ceData.reduce(
+				total[column] = data.reduce(
 					(total, row) => total + parseFloat(row[column] || 0),
 					0
 				);
+				total[column] = parseFloat(total[column]).toFixed(2);
 			}
 		});
 
-		// Calculate total for each column for PE
-		Object.keys(peTotal).forEach((column) => {
-			if (column !== "Strike") {
-				peTotal[column] = peData.reduce(
-					(total, row) => total + parseFloat(row[column] || 0),
-					0
-				);
-			}
-		});
-	});
+		return total;
+	}
+
+	$: ceTotal = calculateTotal(ceData);
+	$: peTotal = calculateTotal(peData);
 </script>
 
-<h1>NIFTY Tables</h1>
 <div class="table-container">
 	<table>
 		<tr>
