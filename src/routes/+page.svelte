@@ -1,7 +1,6 @@
 <script>
 	import { onMount, afterUpdate, onDestroy } from "svelte";
 	import OITable from "../components/OITable.svelte";
-	import SymbolSelector from "../components/SymbolSelector.svelte";
 
 	let apiUrl = "";
 	let tablesData = [];
