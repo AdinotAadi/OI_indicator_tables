@@ -28,11 +28,25 @@
 		console.log(apiUrl);
 	}
 
-	onMount(constructApiUrl);
+	onMount(() => {
+		constructApiUrl();
+		fetchData();
+		startPolling();
+	});
 
 	onDestroy(() => {
+		clearInterval(intervalId);
 		checkboxStates = {};
 	});
+
+	let intervalId;
+
+	function startPolling() {
+		intervalId = setInterval(() => {
+			constructApiUrl();
+			fetchData();
+		}, 10000); // 10000 milliseconds = 10 seconds
+	}
 
 	function handleCheckboxChange(event, symbol) {
 		checkboxStates[symbol] = event.target.checked;
@@ -55,9 +69,6 @@
 			};
 		});
 	}
-
-	onMount(fetchData);
-	afterUpdate(fetchData);
 </script>
 
 <div>
